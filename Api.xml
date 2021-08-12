@@ -1,0 +1,895 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Api</name>
+    </assembly>
+    <members>
+        <member name="T:Api.Controllers.Admin.AccountsController">
+            <summary>
+            Quản lý Tài Khoản - dành cho Quản Trị Viên. Trang dành cho Người Dùng tại api/user/Account
+            </summary>
+            <response code="401">Chưa xác thực hoặc xác thực thất bại</response>
+            <response code="409">Xung đột dữ liệu</response>
+            <response code="500">Lỗi bên thứ 3 hoặc ngoại lệ chưa xác định</response>
+        </member>
+        <member name="M:Api.Controllers.Admin.AccountsController.Get(System.Int32,System.Int32,System.String)">
+            <summary>
+            Lấy ra danh sách toàn bộ Tài Khoản
+            </summary>
+            <param name="skip">Vị trí dòng bắt đầu lấy dữ liệu.</param>
+            <param name="take">Số lượng dòng dữ liệu lấy ra kể từ dòng <paramref name="skip"/>.</param>
+            <param name="filter">Email, di động hoặc tên người dùng, không phân biệt hoa thường.</param>
+            <response code="200">Lấy ra danh sách toàn bộ Tài Khoản không bao gồm thuộc tính kiểu đối tượng (trừ DateTime)</response>
+        </member>
+        <member name="M:Api.Controllers.Admin.AccountsController.GetAsync(System.String)">
+            <summary>
+            Lấy thông tin Tài Khoản theo <paramref name="id"/>
+            </summary>
+            <response code="200">Trả về thông tin Tài Khoản không bao gồm thuộc tính kiểu đối tượng (trừ DateTime)</response>
+            <response code="404">Không tìm thấy Tài Khoản</response>
+        </member>
+        <member name="M:Api.Controllers.Admin.AccountsController.Put(System.String,Api.Entities.Account)">
+            <summary>
+            Cập nhật thông tin Tài Khoản theo <paramref name="id"/>. Ngoại trừ các kiểu dữ liệu nguyên thủy và DateTime, các kiểu dữ liệu còn lại đều không thể cập nhật.
+            </summary>
+            <param name="id">accountId</param>
+            <param name="account">Thông tin cập nhật. Không truyền AccountId, Password, Email, SecrectKey, CreatedAt, LastLogin và IsDeleted. Mọi trường khác kiểu dữ liệu nguyên thủy và DateTime khi truyền vào đều không có giá trị (luôn bị bỏ qua).</param>
+            <response code="204">Thành công</response>
+            <response code="403">Không được chỉnh sửa dữ liệu của người khác.</response>
+            <response code="404">Không tìm thấy Tài Khoản</response>
+        </member>
+        <member name="M:Api.Controllers.Admin.AccountsController.Delete(System.String)">
+            <summary>
+            Đánh dấu Tài Khoản là đã bị xóa.
+            </summary>
+            <param name="id">accountId</param>
+            <response code="204">Thành công</response>
+            <response code="403">Trạng thái isDeleted bị trùng.</response>
+            <response code="404">Không tìm thấy Tài Khoản</response>
+        </member>
+        <member name="M:Api.Controllers.Admin.AccountsController.Patch(System.String)">
+            <summary>
+            Khôi phục Tài Khoản đã bị xóa.
+            </summary>
+            <param name="id">accountId</param>
+            <response code="204">Thành công</response>
+            <response code="403">Trạng thái isDeleted bị trùng.</response>
+            <response code="404">Không tìm thấy Tài Khoản</response>   
+        </member>
+        <member name="T:Api.Controllers.AuthenticationController">
+            <summary>
+            Api dùng cho kiểm thử việc xác thực
+            </summary>
+            <response code="401">Chưa xác thực hoặc xác thực thất bại</response>
+        </member>
+        <member name="M:Api.Controllers.AuthenticationController.Login">
+            <summary>
+            Kiểm tra xem Token của bạn đã xác thực thành công chưa
+            </summary>
+            <response code="200">Thành công</response>
+            <response code="401">Thất bại</response>
+        </member>
+        <member name="M:Api.Controllers.AuthenticationController.IsInRole(System.String)">
+            <summary>
+            Xác nhận Token có <paramref name="role"/> hay không
+            </summary>
+            <param name="role">Vai trò của người dùng để truy cập một số API nhất định</param>
+            <response code="200">true: Người dùng có vai trò <paramref name="role"/>. false: Người dùng không có vai trò <paramref name="role"/></response>
+        </member>
+        <member name="M:Api.Controllers.Business.CertificatesController.Get">
+            <summary>
+            Trả về các chứng chỉ, giấy chứng nhận của Tài Khoản Bán Hàng.
+            </summary>
+            <response code="200">Thành công và trả về thông tin.</response>
+        </member>
+        <member name="M:Api.Controllers.Business.CertificatesController.Post(Api.Entities.Certificate)">
+            <summary>
+            Thêm chứng chỉ, giấy chứng nhận vào thông tin của Tài Khoản Bán Hàng.
+            </summary>
+            <param name="certificate">Thông tin chứng chỉ. Không cần truyền SupplierId. Mọi trường khác kiểu dữ liệu nguyên thủy và DateTime khi truyền vào đều không có giá trị (luôn bị bỏ qua).</param>
+            <response code="201">Thành công và trả về thông tin vừa tạo.</response>
+        </member>
+        <member name="M:Api.Controllers.Business.CertificatesController.Put(System.Int32,Api.Entities.Certificate)">
+            <summary>
+            Cập nhật thông tin.
+            </summary>
+            <param name="id">CertificateId</param>
+            <param name="certificate">Thông tin cập nhật. Không cần truyền SupplierId. Mọi trường khác kiểu dữ liệu nguyên thủy và DateTime khi truyền vào đều không có giá trị (luôn bị bỏ qua).</param>
+            <response code="204">Thành công.</response>
+            <response code="403">Không được phép sửa tài nguyên của người khác.</response>
+            <response code="404">Không tìm thấy.</response>
+        </member>
+        <member name="M:Api.Controllers.Business.CertificatesController.Delete(System.Int32)">
+            <summary>
+            Xóa chứng chỉ, giấy phép của Tài Khoản Bán Hàng theo <paramref name="id"/>
+            </summary>
+            <param name="id">CertificateId</param>
+            <response code="204">Thành công.</response>
+            <response code="403">Không được phép sửa tài nguyên của người khác.</response>
+            <response code="404">Không tìm thấy.</response>
+        </member>
+        <member name="T:Api.Controllers.Business.GoodsController">
+            <summary>Quản lý những Sản Phẩm của Người Bán.</summary>
+            <response code="401">Chưa xác thực hoặc xác thực thất bại</response>
+            <response code="409">Xung đột dữ liệu</response>
+            <response code="500">Lỗi bên thứ 3 hoặc ngoại lệ chưa xác định</response>
+        </member>
+        <member name="M:Api.Controllers.Business.GoodsController.Get(System.Int32,System.Int32,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            Lấy danh sách Sản Phẩm đã tải lên của Người Bán theo điều kiện lọc (nếu có).
+            </summary>
+            <param name="skip">Vị trí dòng bắt đầu lấy dữ liệu.</param>
+            <param name="take">Số lượng dòng dữ liệu lấy ra kể từ dòng <paramref name="skip"/></param>
+            <param name="fromDay">Điều kiện ngày tải Sản Phẩm UploadDate từ thời gian này đến hiện tại.</param>
+            <param name="toDay">Điều kiện ngày tài Sản Phẩm UploadDate từ thời gian này trở về trước.</param>
+            <response code="200">Thành công và trả về thông tin.</response>
+        </member>
+        <member name="M:Api.Controllers.Business.GoodsController.Post(Api.Models.GoodsUploadHandler)">
+            <summary>
+            Đăng Sản Phẩm cá nhân để rao bán.
+            </summary>
+            <param name="goodsUploadHandler">Thông tin Sản Phẩm cần rao bán. Có thể không cần nhập Note.</param>
+            <response code="201">Thành công.</response>
+            <response code="403">Category của OrderDetail phải là nguyên tử, nghĩa là không thể chi tiết hơn nữa.</response>
+        </member>
+        <member name="T:Api.Controllers.Business.NegotiatesController">
+            <summary>Thương lượng Đơn Hàng - dành cho Người Bán.</summary>
+            <response code="401">Chưa xác thực hoặc xác thực thất bại</response>
+            <response code="409">Xung đột dữ liệu</response>
+            <response code="500">Lỗi bên thứ 3 hoặc ngoại lệ chưa xác định</response>
+        </member>
+        <member name="M:Api.Controllers.Business.NegotiatesController.Get(System.Int32)">
+            <summary>
+            Lấy thông tin Thương Lượng về Đơn Hàng <paramref name="orderId"/>.
+            </summary>
+            <param name="orderId"></param>
+            <response code="200">Thành công và trả về thông tin.</response>
+            <response code="423">Đơn Hàng này đã bị thu hồi hoặc lỗi nên không thể tương tác.</response>
+        </member>
+        <member name="M:Api.Controllers.Business.NegotiatesController.Put(Api.Entities.Negotiation)">
+            <summary>
+            Cập nhật Thương lượng Đơn Hàng - dành cho Người Bán.
+            </summary>
+            <param name="negotiate">Chỉ cần truyền OrderId và MaxDurationByMinutes. Mọi trường còn lại truyền vào đều vô giá trị.</param>
+            <response code="204">Thành công.</response>
+            <response code="403">Không thể thao tác Đơn Hàng của người khác.</response>
+            <response code="404">Không tìm thấy Đơn Hàng.</response>
+            <response code="412">MaxDurationByMinutes không nằm trong giới hạn giá trị.</response>
+            <response code="423">Đơn Hàng không thể thương lượng.</response>
+        </member>
+        <member name="M:Api.Controllers.Business.NegotiatesController.Delete(System.Int32,System.Boolean)">
+            <summary>
+            Chấp nhận hoặc từ chối với Thương Lượng của Đơn Hàng <paramref name="orderId"/>. Dù chấp nhận hay từ chối thì Thương Lượng cũng sẽ bị xóa.
+            </summary>
+            <param name="isAccept">true nếu đồng ý với Thương Lượng, false nếu từ chối.</param>
+            <response code="204">Thành công.</response>
+            <response code="404">Không tìm thấy thương lượng của Đơn Hàng.</response>
+            <response code="408">Đã hết thời gian thương lượng hoặc Đơn Hàng đã hết hạn nên không thể thao tác.</response>
+            <response code="423">Đơn Hàng này đã được nhận hoặc bị thu hồi hoặc lỗi nên không thể tương tác.</response>
+        </member>
+        <member name="T:Api.Controllers.Business.OrderEvaluationsController">
+            <summary>Quản lý đánh giá Đơn Hàng đã tiếp nhận - dành cho Người Bán.</summary>
+             <response code="401">Chưa xác thực hoặc xác thực thất bại</response>
+             <response code="409">Xung đột dữ liệu</response>
+             <response code="500">Lỗi bên thứ 3 hoặc ngoại lệ chưa xác định</response>
+        </member>
+        <member name="M:Api.Controllers.Business.OrderEvaluationsController.Post(Api.Entities.OrderEvaluation)">
+            <summary>
+            Người Bán đánh giá Người Mua thông qua Đơn Hàng.
+            </summary>
+            <param name="orderEvaluation">Chỉ cần truyền OrderId, Rate và Comment (nếu có).</param>
+            <response code="201">Thành công.</response>
+            <response code="400">Giá trị Rate không phù hợp.</response>
+            <response code="403">Không thể đánh giá Đơn Hàng của người khác hoặc Đơn Hàng này đã được đánh giá.</response>
+            <response code="404">Không tìm thấy Đơn Hàng.</response>
+            <response code="423">Đơn Hàng hoàn tất mới được đánh giá.</response>
+        </member>
+        <member name="T:Api.Controllers.Business.OrdersController">
+            <summary>Quản lý Đơn Đặt Hàng đã tiếp nhận - dành cho Người Bán.</summary>
+             <response code="401">Chưa xác thực hoặc xác thực thất bại</response>
+             <response code="409">Xung đột dữ liệu</response>
+             <response code="500">Lỗi bên thứ 3 hoặc ngoại lệ chưa xác định</response>
+        </member>
+        <member name="M:Api.Controllers.Business.OrdersController.Get(System.Int32,System.Int32,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            Lấy danh sách Đơn Đặt Hàng đã tiếp nhận của Người Bán theo điều kiện lọc (nếu có).
+            </summary>
+            <param name="skip">Vị trí dòng bắt đầu lấy dữ liệu.</param>
+            <param name="take">Số lượng dòng dữ liệu lấy ra kể từ dòng <paramref name="skip"/></param>
+            <param name="fromDay">Điều kiện ngày tạo Đơn Đặt Hàng CreatAt từ thời gian này đến hiện tại.</param>
+            <param name="toDay">Điều kiện ngày tạo Đơn Đặt Hàng CreatAt từ thời gian này trở về trước.</param>
+            <response code="200">Thành công và trả về thông tin.</response>
+        </member>
+        <member name="M:Api.Controllers.Business.OrdersController.Patch(System.Int32)">
+            <summary>
+            Tiếp nhận Đơn Đặt Hàng <paramref name="id"/>
+            </summary>
+            <param name="id">OrderId</param>
+            <response code="204">Thành công.</response>
+            <response code="403">Không thể nhận Đơn Hàng của bản thân.</response>
+            <response code="404">Không tìm thấy.</response>
+            <response code="405">Đơn này đang được thương lượng, thỏa hiệp thương lượng để nhận đơn.</response>
+            <response code="408">Đơn Hàng đã hết hạn nhận đơn.</response>
+            <response code="423">Đơn này không trong trạng thái có thể nhận. Có thể đơn đã có người nhận, đã chỉ định người nhận, đã hoàn thành, đã bị đóng bởi chủ sở hữu hoặc quá hạn.</response>
+        </member>
+        <member name="M:Api.Controllers.Business.OrdersController.Post(System.Int32,System.String,System.String,System.String)">
+            <summary>
+            Tải lên tệp sản phẩm tại OrderDetail theo <paramref name="orderDetailId"/>. Nếu đã có tệp trước đó thì sẽ bị ghi đè.
+            </summary>
+            <param name="orderDetailId"></param>
+            <param name="fileName">Tên đầy đủ của tệp, bao gồm cả đuôi tệp.</param>
+            <param name="dataFileBase64">Chuỗi Base64 của dữ liệu tệp.</param>
+            <param name="signature">Chữ ký được tạo ra bằng cách băm <paramref name="dataFileBase64"/> bởi HmacSHA256 với Key là SecrectKey của Người Bán truyền vào.</param>
+            <response code="201">Tải tệp thành công và trả về tên tệp.</response>
+            <response code="400">Có thể do không thể xác minh tính toàn vẹn dữ liệu của tệp tải lên.</response>
+            <response code="403">Không được phép thao tác Đơn Hàng của người khác.</response>
+            <response code="404">Không tìm thấy Chi Tiết Đơn Hàng.</response>
+            <response code="423">Đơn không trong trạng thái có thể đăng tải sản phẩm hoặc sản phẩm đã được chấp nhận, không thể chỉnh sửa.</response>
+        </member>
+        <member name="M:Api.Controllers.Business.OrdersController.Get(System.Int32)">
+            <summary>
+            Lấy Tệp Mô Tả DescriptionFile của Đơn Hàng.
+            </summary>
+            <param name="id">orderId</param>
+            <response code="200">Trả về tệp DescriptionFile.</response>
+            <response code="403">Không được phép truy cập tệp mô tả này.</response>
+            <response code="404">Không tìm thấy Đơn Hàng hoặc tệp mô tả.</response>
+            <response code="423">Đơn đã bị xóa hoặc thu hồi.</response>
+        </member>
+        <member name="T:Api.Controllers.Business.SuppliersController">
+            <summary>
+            Nghiệp vụ liên quan đến Người Bán.
+            </summary>
+            <response code="401">Chưa xác thực hoặc xác thực thất bại</response>
+            <response code="409">Xung đột dữ liệu</response>
+            <response code="500">Lỗi bên thứ 3 hoặc ngoại lệ chưa xác định</response>
+        </member>
+        <member name="M:Api.Controllers.Business.SuppliersController.Get">
+            <summary>
+            Lấy ra thông tin Tài Khoản Bán Hàng
+            </summary>
+            <response code="200">Thành công và trả về thông tin</response>
+        </member>
+        <member name="M:Api.Controllers.Business.SuppliersController.Put(Api.Entities.Supplier)">
+            <summary>
+            Cập nhật thông tin Tài Khoản Bán Hàng.
+            </summary>
+            <param name="supplier">Thông tin cập nhật. Không cần truyền SupplierId. Mọi trường khác kiểu dữ liệu nguyên thủy và DateTime khi truyền vào đều không có giá trị (luôn bị bỏ qua).</param>
+            <response code="204">Thành công</response>
+        </member>
+        <member name="T:Api.Controllers.CloudStorageController">
+            <summary>
+            Thao tác với Đám Mây Lưu Trữ Dữ Liệu.
+            </summary>
+            <response code="401">Chưa xác thực hoặc xác thực thất bại</response>
+            <response code="500">Lỗi bên thứ 3 hoặc ngoại lệ chưa xác định</response>
+        </member>
+        <member name="M:Api.Controllers.CloudStorageController.Get">
+            <summary>
+            Lấy ra thông tin cơ bản của các thư mục và tệp trên Cloud
+            </summary>
+        </member>
+        <member name="M:Api.Controllers.CloudStorageController.Get(System.String)">
+            <summary>
+            Tải xuống tệp từ Cloud
+            </summary>
+            <param name="id">fileId</param>
+            <returns></returns>
+        </member>
+        <member name="M:Api.Controllers.CloudStorageController.Move(System.String,System.String,System.String)">
+            <summary>
+            Di chuyển thư mục hoặc tệp
+            </summary>
+            <param name="fileId">Id thư mục hoặc tệp</param>
+            <param name="newParentId">Id thư mục cha nơi chuyển đến</param>
+            <param name="oldParentId">Id của thư mục cha hiện tại. Không biết thì bỏ trống</param>
+        </member>
+        <member name="M:Api.Controllers.CloudStorageController.PostFolder(System.String,System.String)">
+            <summary>
+            Tạo thư mục
+            </summary>
+            <param name="folderName">Tên thư mục</param>
+            <param name="folderParentId">Id của thư mục cha (nếu có).</param>
+            <response code="201">Tạo thành công và trả về id của thư mục</response>
+        </member>
+        <member name="M:Api.Controllers.CloudStorageController.PostFolder(GoogleApi.Drive.GoogleDriveFileCreated)">
+            <summary>
+            Tải tệp lên
+            </summary>
+            <response code="201">Tạo thành công và trả về id của tệp</response>
+        </member>
+        <member name="T:Api.Controllers.Developer.InternalEmailsController">
+            <summary>
+            Quản lý Email nội bộ BestSV
+            </summary>
+            <response code="401">Chưa xác thực hoặc xác thực thất bại</response>
+            <response code="409">Xung đột dữ liệu</response>
+            <response code="500">Lỗi bên thứ 3 hoặc ngoại lệ chưa xác định</response>
+        </member>
+        <member name="M:Api.Controllers.Developer.InternalEmailsController.Post(System.String,Api.Models.Email,System.String)">
+            <summary>
+            Gửi thông tin email nội bộ được cấp cho thành viên BestSV.
+            </summary>
+            <param name="sendTo">Địa chỉ email cá nhân người nhận.</param>
+            <param name="email">Email nội bộ được cấp.</param>
+            <param name="lastName">Tên người nhận.</param>
+            <response code="204">Thành công.</response>
+        </member>
+        <member name="T:Api.Controllers.Public.AccountsController">
+            <response code = "401" > Chưa xác thực hoặc xác thực thất bại</response>
+            <response code="409">Xung đột dữ liệu</response>
+            <response code="500">Lỗi bên thứ 3 hoặc ngoại lệ chưa xác định</response>
+        </member>
+        <member name="M:Api.Controllers.Public.AccountsController.Get(System.String)">
+            <summary>
+            Trả thông tin công khai về Tài Khoản theo <paramref name="id"/>.
+            </summary>
+            <param name="id">AccountId</param>
+            <response code="200">Thành công và trả về thông tin Tài Khoản.</response>
+        </member>
+        <member name="M:Api.Controllers.Public.AccountsController.PostAsync(Api.Entities.Account,System.String)">
+            <summary>
+            Tạo Tài Khoản mới
+            </summary>
+            <param name="account">
+                Thông tin Tài Khoản cần khởi tạo. Không cần truyền CreateAt, LastLogin, IsDeleted và SecretKey.
+                SerectKey là chuỗi ký tự ngẫu nhiên gồm 6 kí tự để Người Dùng xác thực toàn vẹn thông tin nhạy cảm gửi/nhận. Mã chỉ hiển thị một lần duy nhất khi cấp mã, Người Dùng cần lưu giữ và bảo mật mã này. Có thể xin cấp lại SerectKey không giới hạn.
+                Mọi trường khác kiểu dữ liệu nguyên thủy và DateTime khi truyền vào đều không có giá trị (luôn bị bỏ qua).
+            </param>
+            <param name="PIN">Mã xác minh gồm 6 chữ số. Lấy mã pin tại https://api.bestsv.net/api/public/pin/{id}</param>
+            <response code="201">Trả về thông tin Tài Khoản.</response>
+            <response code="401 ">Sai mã <paramref name="PIN"/>.</response>
+            <response code="404">Không tìm thấy mã <paramref name="PIN"/>.</response>
+            <response code="406">Mã <paramref name="PIN"/> hết thời hạn hiệu lực.</response>
+            <response code="412">Id đăng ký Tài Khoản đã tồn tại.</response>
+        </member>
+        <member name="M:Api.Controllers.Public.AccountsController.ChangePassword(System.String,System.String,System.String)">
+            <summary>
+            Đổi mật khẩu của Tài Khoản theo <paramref name="id"/>
+            </summary>
+            <param name="id">id của Tài Khoản cần đổi</param>
+            <param name="newPassword">Mật khẩu mới</param>
+            <param name="PIN">Mã xác minh gồm 6 chữ số. Lấy mã pin tại https://api.bestsv.net/api/public/pin/{id}</param>
+            <response code="204">Thành công</response>
+            <response code="401">Sai mã <paramref name="PIN"/></response>
+            <response code="404">Không tìm thấy mã <paramref name="PIN"/> hoặc Tài Khoản không tồn tại</response>
+            <response code="406">Mã <paramref name="PIN"/> hết thời hạn hiệu lực</response>
+        </member>
+        <member name="T:Api.Controllers.Public.AvatarsController">
+            <response code="500">Lỗi bên thứ 3 hoặc ngoại lệ chưa xác định</response>
+        </member>
+        <member name="M:Api.Controllers.Public.AvatarsController.Get">
+            <summary>
+            Lấy danh sách Avatar.
+            </summary>
+            <response code="200">Thành công và trả về thông tin.</response>
+        </member>
+        <member name="M:Api.Controllers.Public.AvatarsController.Get(System.Byte)">
+            <summary>
+            Lấy thông tin Avatar theo <paramref name="id"/>.
+            </summary>
+            <param name="id">AvatarId</param>
+            <response code="200">Thành công và trả về thông tin.</response>
+            <response code="404">Không tìm thấy.</response>
+        </member>
+        <member name="M:Api.Controllers.Public.CategoriesController.Get">
+            <summary>
+            Trả về danh sách Thể Loại dưới dạng sơ đồ cây.
+            </summary>
+            <response code="200">Trả về thông tin.</response>
+        </member>
+        <member name="M:Api.Controllers.Public.CategoriesController.Get(System.Byte)">
+            <summary>
+            Trả về thông tin Thể Loại theo <paramref name="id"/>
+            </summary>
+            <param name="id">CategoryId</param>
+            <response code="200">Trả về thông tin.</response>
+            <response code="404">Không tìm thấy.</response>
+        </member>
+        <member name="M:Api.Controllers.Public.CertificatesController.Get(System.Int32)">
+            <summary>
+            Trả về thông tin chứng chỉ, giấy chứng nhận của theo <paramref name="id"/>. Ai cũng có thể xem được.
+            </summary>
+            <param name="id">CertificateId</param>
+            <response code="200">Thành công và trả về thông tin.</response>
+            <response code="404">Không tìm thấy.</response>
+        </member>
+        <member name="M:Api.Controllers.Public.CertificatesController.Get(System.String)">
+            <summary>
+            Trả về thông tin chứng chỉ, giấy chứng nhận của theo <paramref name="supplierId"/>. Ai cũng có thể xem được.
+            </summary>
+            <response code="200">Thành công và trả về thông tin.</response>
+        </member>
+        <member name="T:Api.Controllers.Public.CollegesController">
+            <response code="500">Lỗi bên thứ 3 hoặc ngoại lệ chưa xác định</response>
+        </member>
+        <member name="M:Api.Controllers.Public.CollegesController.Get">
+            <summary>
+            Lấy ra danh sách trường Đại học, Cao đẳng
+            </summary>
+            <response code="200">Thành công và trả về thông tin.</response>
+        </member>
+        <member name="M:Api.Controllers.Public.CollegesController.Get(System.Int16)">
+            <summary>
+            Lấy ra thông tin trường Đại học, Cao đẳng theo <paramref name="id"/>.
+            </summary>
+            <param name="id">CollegeId.</param>
+            <response code="200">Thành công và trả về thông tin.</response>
+            <response code="404">Không tìm thấy.</response>
+        </member>
+        <member name="T:Api.Controllers.Public.GoodsController">
+            <response code = "401" > Chưa xác thực hoặc xác thực thất bại</response>
+            <response code="409">Xung đột dữ liệu</response>
+            <response code="500">Lỗi bên thứ 3 hoặc ngoại lệ chưa xác định</response>
+        </member>
+        <member name="M:Api.Controllers.Public.GoodsController.Get(System.Int32,System.Int32,System.Nullable{System.Byte},System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            Lấy danh sách Sản Phẩm theo điều kiện lọc (nếu có).
+            </summary>
+            <param name="skip">Vị trí dòng bắt đầu lấy dữ liệu.</param>
+            <param name="take">Số lượng dòng dữ liệu lấy ra kể từ dòng <paramref name="skip"/></param>
+            <param name="categoryId">Sản Phẩm thuộc thể loại CategoryId tương ứng.</param>
+            <param name="fromDay">Điều kiện ngày tải Sản Phẩm UploadDate từ thời gian này đến hiện tại.</param>
+            <param name="toDay">Điều kiện ngày tài Sản Phẩm UploadDate từ thời gian này trở về trước.</param>
+            <response code="200">Thành công và trả về thông tin.</response>
+        </member>
+        <member name="T:Api.Controllers.Public.OrderEvaluationsController">
+            <response code="500">Lỗi bên thứ 3 hoặc ngoại lệ chưa xác định</response>
+        </member>
+        <member name="M:Api.Controllers.Public.OrderEvaluationsController.GetAccount(System.String)">
+            <summary>
+            Tính điểm Rate trung bình Đánh Giá Đơn Hàng của Người Mua <paramref name="accountId"/>. Nếu không tìm thấy Người Mua vẫn không báo lỗi.
+            </summary>
+            <param name="accountId"></param>
+            <response code="200">Thành công và trả về thông tin.</response>
+        </member>
+        <member name="M:Api.Controllers.Public.OrderEvaluationsController.GetSupplier(System.String)">
+            <summary>
+            Tính điểm Rate trung bình Đánh Giá Đơn Hàng của Người Bán <paramref name="supplierId"/>. Nếu không tìm thấy Người Bán vẫn không báo lỗi.
+            </summary>
+            <param name="supplierId"></param>
+            <response code="200">Thành công và trả về thông tin.</response>
+        </member>
+        <member name="M:Api.Controllers.Public.OrderEvaluationsController.Get(System.Int32,System.Boolean)">
+            <summary>
+            Lấy thông tin đánh giá của Đơn Hàng <paramref name="orderId"/> loại <paramref name="type"/>.
+            </summary>
+            <param name="orderId"></param>
+            <param name="type">true: Người Bán đánh giá Người Mua, false: Người Mua đánh giá Người Bán.</param>
+            <response code="200">Thành công và trả về thông tin.</response>
+            <response code="404">Không tìm thấy.</response>
+        </member>
+        <member name="T:Api.Controllers.Public.OrdersController">
+            <response code="500">Lỗi bên thứ 3 hoặc ngoại lệ chưa xác định</response>
+        </member>
+        <member name="M:Api.Controllers.Public.OrdersController.Get(System.Int32,System.Int32,System.Nullable{System.Byte},System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Lấy ra những Đơn Đặt Hàng theo điều kiện lọc (nếu có).
+            </summary>
+            <param name="skip">Vị trí dòng bắt đầu lấy dữ liệu.</param>
+            <param name="take">Số lượng dòng dữ liệu lấy ra kể từ dòng <paramref name="skip"/></param>
+            <param name="categoryId">Đơn Đặt Hàng có chứa sản phẩm thuộc Thể Loại tương ứng.</param>
+            <param name="tagId">Đơn Đặt Hàng được gắn Tag tương ứng. Tag không phân biệt hoa thường.</param>
+            <param name="isPending">Chỉ hiện Đơn Hàng công khai chưa có người nhận nếu giá trị truyền vào là true. Mặc định là true.</param>
+            <param name="isOptimizeSize">Mặc định khi thực hiện API này thì OrderDetails và OrderTags cũng được tải. Nếu isOptimizeSize mang giá trị true thì OrderDetails và OrderTags sẽ không được trả về chung với phản hồi. Kích thước của phản hồi sẽ được giảm nhưng thời gian nhận được phản hồi có thể tăng một phần không đáng kể. isOptimizeSize mặc định là true.</param>
+            <response code="200">Thành công và trả về thông tin.</response>
+        </member>
+        <member name="M:Api.Controllers.Public.OrdersController.Get(System.Int32)">
+            <summary>
+            Trả về thông tin của Đơn Đặt Hàng theo <paramref name="id"/>, bao gồm chi tiết các dòng đặt hàng.
+            </summary>
+            <param name="id">OrderId</param>
+            <response code="200">Thành công và trả về thông tin.</response>
+            <response code="404">Không tìm thấy.</response>
+            <response code="423">Đơn bị lỗi hoặc đã thu hồi nên không thể xem.</response> 
+        </member>
+        <member name="M:Api.Controllers.Public.OrdersController.Get(System.String,System.Byte)">
+            <summary>
+            Trả về số lượng Đơn Hàng của Người Mua hoặc Người Bán tùy theo <paramref name="type"/>
+            </summary>
+            <param name="accountId"></param>
+            <param name="type">0: Người Mua, 1: Người Bán</param>
+            <response code="200">Trả về số lượng Đơn Hàng.</response>
+            <response code="400">Type không hợp lệ.</response>
+            <response code="404">Không tìm thấy Người Mua hoặc Người Bán.</response>
+        </member>
+        <member name="T:Api.Controllers.Public.PinController">
+            <summary>
+            Quản lý mã PIN
+            </summary>
+            <response code="409">Xung đột dữ liệu</response>
+            <response code="500">Lỗi bên thứ 3 hoặc ngoại lệ chưa xác định</response>
+        </member>
+        <member name="M:Api.Controllers.Public.PinController.Send(System.String)">
+            <summary>
+            Gửi mã pin gồm 6 chữ số đến <paramref name="email"/>. Sau khi yêu cầu thành công cần 15 phút để xin cấp lại mã mới.
+            </summary>
+            <param name="email">Nếu đã có Tài Khoản chính là trường id</param>
+            <response code="202">Yêu cầu đã được chấp nhận nhưng không có nghĩa email đã gửi thành công (sai email hoặc các lý do khác).</response>
+            <response code="404">Không tìm thấy địa chỉ <paramref name="email"/>. Gửi thất bại.</response>
+            <response code="429">Yêu cầu mã PIN nhiều lần trong thời gian ngắn.</response>
+        </member>
+        <member name="T:Api.Controllers.Public.ProcessStatusController">
+            <response code="500">Lỗi bên thứ 3 hoặc ngoại lệ chưa xác định</response>
+        </member>
+        <member name="M:Api.Controllers.Public.ProcessStatusController.Get">
+            <summary>
+            Lấy danh sách Trạng Thái Xử Lý.
+            </summary>
+            <response code="200">Thành công và trả về thông tin.</response>
+        </member>
+        <member name="M:Api.Controllers.Public.ProcessStatusController.Get(System.Byte)">
+            <summary>
+            Lấy thông tin Trạng Thái Xử Lý theo <paramref name="id"/>.
+            </summary>
+            <param name="id"></param>
+            <response code="200">Thành công và trả về thông tin.</response>
+            <response code="404">Không tìm thấy.</response>
+        </member>
+        <member name="T:Api.Controllers.Public.ZipCodesController">
+            <response code="500">Lỗi bên thứ 3 hoặc ngoại lệ chưa xác định</response>
+        </member>
+        <member name="M:Api.Controllers.Public.ZipCodesController.Get(System.Boolean)">
+            <summary>
+            Lấy ra danh sách 63 tỉnh thành
+            </summary>
+            <param name="isSortName">Nếu gán true thì danh sách trả về sẽ được sắp xếp tăng dần theo bảng chữ cái</param>
+            <response code="200">Thành công và trả về thông tin</response>
+        </member>
+        <member name="M:Api.Controllers.Public.ZipCodesController.Get(System.Int32)">
+            <summary>
+            Lấy ra thông tin vị trí dựa theo <paramref name="id"/>
+            </summary>
+            <param name="id">Số gồm 6 chữ số là ZipCode</param>
+            <response code="200">Thành công</response>
+            <response code="404">Không tìm thấy</response>
+        </member>
+        <member name="T:Api.Controllers.TokenController">
+            <summary>
+            Quản lý mã Token
+            </summary>
+        </member>
+        <member name="M:Api.Controllers.TokenController.Get(System.String,System.String,System.Boolean)">
+            <summary>
+            Cấp mã Token để gọi các API cần xác thực.
+            </summary>
+            <param name="id">Tài khoản đăng nhập.</param>
+            <param name="password">Mật khẩu đăng nhập.</param>
+            <param name="needRefreshToken">Nếu nhận giá trị true nếu cần lấy RefreshToken. RefreshToken (thời hạn 90 ngày) để làm mới Token. Mỗi tài khoản chỉ có thể lưu tối đa 5 RefreshToken gần nhất (các <paramref name="needRefreshToken"/> cũ sẽ bị thu hồi).</param>
+            <returns>Chuỗi kí tự là Bearer Token để xác thực.</returns>
+            <response code="201">Thành công và trả về Token.</response>
+            <response code="401">Mật khẩu không chính xác.</response>
+            <response code="403">Tài khoản đã bị vô hiệu hóa.</response>
+            <response code="404">Không tìm thấy tài khoản.</response>
+            <response code="429">Nhập sai mật khẩu quá nhiều lần (nhiều hơn 3).</response>
+        </member>
+        <member name="M:Api.Controllers.TokenController.Get(System.String)">
+            <summary>
+            Cấp phát mã Token mới dựa vào RefreshToken
+            </summary>
+            <param name="refreshTokenId">Mã RefreshToken được cấp</param>
+            <response code="400"><paramref name="refreshTokenId"/> không đúng dịnh dạng Guid</response>
+            <response code="403">Tài khoản đã bị vô hiệu hóa.</response>
+            <response code="404">Không tìm thấy dữ liệu vể <paramref name="refreshTokenId"/>. Có thể mã đã bị thu hồi.</response>
+            <response code="408"><paramref name="refreshTokenId"/> đã hết hạn.</response>
+        </member>
+        <member name="M:Api.Controllers.TokenController.CheckHackingPassword(Microsoft.AspNetCore.Mvc.IActionResult@)">
+            <summary>
+            Kiểm tra xem có dấu hiệu đang dò mật khẩu không
+            </summary>
+        </member>
+        <member name="T:Api.Controllers.User.AccountsController">
+            <summary>
+            Quản lý Tài Khoản - dành cho Người Dùng
+            </summary>
+            <response code="401">Chưa xác thực hoặc xác thực thất bại</response>
+            <response code="409">Xung đột dữ liệu</response>
+            <response code="500">Lỗi bên thứ 3 hoặc ngoại lệ chưa xác định</response>
+        </member>
+        <member name="M:Api.Controllers.User.AccountsController.Get">
+            <summary>
+            Lấy thông tin tài khoản cá nhân
+            </summary>
+            <response code="200">Thành công và trả về thông tin</response>
+        </member>
+        <member name="M:Api.Controllers.User.AccountsController.Put(Api.Entities.Account)">
+            <summary>
+            Cập nhật thông tin Tài Khoản cá nhân. Ngoại trừ các kiểu dữ liệu nguyên thủy và DateTime, các kiểu dữ liệu còn lại đều không thể cập nhật.
+            </summary>
+            <param name="account">Thông tin cập nhật. Không truyền AccountId, Password, Email, SecrectKey, CreatedAt, LastLogin và IsDeleted. Mọi trường khác kiểu dữ liệu nguyên thủy và DateTime khi truyền vào đều không có giá trị (luôn bị bỏ qua).</param>
+            <response code="200">Thành công và trả về thông tin đã cập nhật.</response>
+            <response code="403">Không được chỉnh sửa dữ liệu của người khác.</response>
+            <response code="404">Không tìm thấy Tài Khoản</response>
+        </member>
+        <member name="T:Api.Controllers.User.GoodsController">
+            <summary>
+            Quản lý những Sản Phẩm đã mua - dành cho Người Dùng
+            </summary>
+            <response code="401">Chưa xác thực hoặc xác thực thất bại</response>
+            <response code="409">Xung đột dữ liệu</response>
+            <response code="500">Lỗi bên thứ 3 hoặc ngoại lệ chưa xác định</response>
+        </member>
+        <member name="M:Api.Controllers.User.GoodsController.Get(System.Int32,System.Int32,System.Nullable{System.Byte},System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            Lấy danh sách Sản Phẩm đã mua theo điều kiện lọc (nếu có).
+            </summary>
+            <param name="skip">Vị trí dòng bắt đầu lấy dữ liệu.</param>
+            <param name="take">Số lượng dòng dữ liệu lấy ra kể từ dòng <paramref name="skip"/></param>
+            <param name="categoryId">Sản Phẩm thuộc thể loại CategoryId tương ứng.</param>
+            <param name="fromDay">Điều kiện ngày tải Sản Phẩm UploadDate từ thời gian này đến hiện tại.</param>
+            <param name="toDay">Điều kiện ngày tài Sản Phẩm UploadDate từ thời gian này trở về trước.</param>
+            <response code="200">Thành công và trả về thông tin.</response>
+        </member>
+        <member name="T:Api.Controllers.User.OrderEvaluationsController">
+            <summary>Quản lý đánh giá Đơn Hàng đã tiếp nhận - dành cho Người Mua.</summary>
+             <response code="401">Chưa xác thực hoặc xác thực thất bại</response>
+             <response code="409">Xung đột dữ liệu</response>
+             <response code="500">Lỗi bên thứ 3 hoặc ngoại lệ chưa xác định</response>
+        </member>
+        <member name="M:Api.Controllers.User.OrderEvaluationsController.Post(Api.Entities.OrderEvaluation)">
+            <summary>
+            Người Mua đánh giá Người Bán thông qua Đơn Hàng.
+            </summary>
+            <param name="orderEvaluation">Chỉ cần truyền OrderId, Rate và Comment (nếu có).</param>
+            <response code="201">Thành công.</response>
+            <response code="400">Giá trị Rate không phù hợp.</response>
+            <response code="403">Không thể đánh giá Đơn Hàng của người khác hoặc Đơn Hàng này đã được đánh giá.</response>
+            <response code="404">Không tìm thấy Đơn Hàng.</response>
+            <response code="423">Đơn Hàng chưa hoàn tất hoặc đã bị thu hồi.</response>
+        </member>
+        <member name="T:Api.Controllers.User.OrdersController">
+            <summary>Quản lý Đơn Đặt Hàng của Người Dùng (người mua).</summary>
+             <response code="401">Chưa xác thực hoặc xác thực thất bại</response>
+             <response code="409">Xung đột dữ liệu</response>
+             <response code="500">Lỗi bên thứ 3 hoặc ngoại lệ chưa xác định</response>
+        </member>
+        <member name="M:Api.Controllers.User.OrdersController.Get(System.Int32,System.Int32,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Boolean)">
+            <summary>
+            Lấy danh sách toàn bộ Đơn Đặt Hàng của Người Dùng theo điều kiện lọc (nếu có).
+            </summary>
+            <param name="skip">Vị trí dòng bắt đầu lấy dữ liệu.</param>
+            <param name="take">Số lượng dòng dữ liệu lấy ra kể từ dòng <paramref name="skip"/></param>
+            <param name="fromDay">Điều kiện ngày tạo hóa đơn CreatAt từ thời gian này đến hiện tại.</param>
+            <param name="toDay">Điều kiện ngày tạo hóa đơn CreatAt từ thời gian này trở về trước.</param>
+            <param name="isPending">Chỉ hiện Đơn Hàng công khai chưa có người nhận nếu giá trị truyền vào là true. Mặc định là true.</param>
+            <response code="200">Thành công và trả về thông tin.</response>
+        </member>
+        <member name="M:Api.Controllers.User.OrdersController.Post(Api.Entities.Order)">
+            <summary>
+            Tạo Đơn Đặt Hàng. Mọi trường khác kiểu dữ liệu nguyên thủy và DateTime khi truyền vào đều không có giá trị (luôn bị bỏ qua).
+            </summary>
+            <param name="order">Thông tin Đơn Đặt Hàng. Chỉ cần truyền LimitEdit, Expired (quá hạn này sẽ không thể nhận đơn, thương lượng), MaxDurationByMinutes và OrderDetails (trường này sẽ không bị bỏ qua). Nếu muốn chỉ định Người Bán thì truyền thêm SupplierId. Trong OrderDetails không cần truyền OrderId, OrderDetailId và FileUri.</param>
+            <response code="201">Thành công.</response>
+            <response code="400">Thời Hạn Đơn Hàng nhỏ hơn Thời Gian Tạo Đơn hoặc giá trị trường nào đó không hợp lý.</response>
+            <response code="403">Category của OrderDetail chưa phải là nguyên tử hoặc Người Mua chỉ định Người Bán là chính bản thân mình.</response>
+            <response code="404">Không tìm thấy Người Bán.</response>
+            <response code="412">MaxDurationByMinutes không nằm trong giới hạn giá trị.</response>
+        </member>
+        <member name="M:Api.Controllers.User.OrdersController.Patch(System.Int32,System.String,System.String,System.String)">
+            <summary>
+            Đính kèm tệp mô tả yêu cầu vào Đơn Đặt Hàng <paramref name="id"/>. Nếu Đơn Đặt Hàng đã có tệp trước đó thì sẽ bị ghi đè, tệp trước đó sẽ bị xóa.
+            </summary>
+            <param name="id">OrderId.</param>
+            <param name="fileName">Tên đầy đủ của tệp, bao gồm cả đuôi tệp.</param>
+            <param name="dataFileBase64">Chuỗi Base64 của dữ liệu tệp.</param>
+            <param name="signature">Chữ ký được tạo ra bằng cách băm <paramref name="dataFileBase64"/> bởi HmacSHA256 với Key là SecrectKey của Người Mua truyền vào.</param>
+            <response code="204">Thành công.</response>
+            <response code="400">Có thể do không thể xác minh tính toàn vẹn dữ liệu của tệp tải lên.</response>
+            <response code="403">Không thể thao tác Đơn Hàng của người khác.</response>
+            <response code="404">Không tìm thấy.</response>
+            <response code="423">Đơn đã hoàn thành, bị lỗi hoặc đã thu hồi nên không thể thao tác.</response>
+        </member>
+        <member name="M:Api.Controllers.User.OrdersController.Patch(System.Int32,System.Boolean,System.String)">
+            <summary>
+            Kiểm duyệt sản phẩm <paramref name="orderDetailId"/> được tải lên. Khi hết số lần sửa LimitEdit hoặc toàn bộ sản phẩm đều được duyệt thì đơn sẽ hoàn tất.
+            </summary>
+            <param name="orderDetailId"></param>
+            <param name="isAccept"></param>
+            <param name="requirement"></param>
+            
+        </member>
+        <member name="M:Api.Controllers.User.OrdersController.Detele(System.Int32)">
+            <summary>
+            Thu hồi Đơn Đặt Hàng theo <paramref name="id"/>
+            </summary>
+            <param name="id">OrderId</param>
+            <response code="204">Thành công.</response>
+            <response code="403">Không thể thao tác Đơn Đặt Hàng của người khác.</response>
+            <response code="404">Không tìm thấy.</response>
+            <response code="423">Đơn đã bị khóa, không thể thu hồi.</response>
+        </member>
+        <member name="T:Api.Controllers.User.OrderTagsController">
+            <summary>
+            Quản lý thẻ Tag của Đơn Đặt Hàng - dành cho Người Dùng
+            </summary>
+            <response code="401">Chưa xác thực hoặc xác thực thất bại</response>
+            <response code="409">Xung đột dữ liệu</response>
+            <response code="500">Lỗi bên thứ 3 hoặc ngoại lệ chưa xác định</response>
+        </member>
+        <member name="M:Api.Controllers.User.OrderTagsController.Get(System.Int32)">
+            <summary>
+            Trả về danh sách giá trị thẻ Tag của Đơn Đặt Hàng <paramref name="orderId"/>
+            </summary>
+            <param name="orderId"></param>
+            <response code="200">Thành công và trả về thông tin.</response>
+            <response code="403">Không thể xem Đơn Đặt Hàng của người khác.</response>
+            <response code="404">Không tìm thấy Đơn Đặt Hàng.</response>
+        </member>
+        <member name="M:Api.Controllers.User.OrderTagsController.Post(System.Int32,System.String)">
+            <summary>
+            Gắn thẻ <paramref name="tagId"/> cho Đơn Đặt Hàng <paramref name="orderId"/>
+            </summary>
+            <param name="orderId"></param>
+            <param name="tagId">Tên thẻ Tag muốn gắn. Không phân biệt hoa thường.</param>
+            <response code="201">Thành công.</response>
+            <response code="400">Thẻ Tag không đúng định dạng.</response>
+            <response code="403">Thẻ Tag bị trùng hoặc không được chỉnh sửa tài nguyên của người khác.</response>
+            <response code="404">Không tìm thấy Đơn Đặt Hàng.</response>
+        </member>
+        <member name="M:Api.Controllers.User.OrderTagsController.Delete(System.Int32,System.String)">
+            <summary>
+            Xóa thẻ Tag <paramref name="tagId"/> khỏi Đơn Đặt Hàng <paramref name="orderId"/>
+            </summary>
+            <param name="orderId"></param>
+            <param name="tagId"></param>
+            <response code="204">Thành công.</response>
+            <response code="403">Không được chỉnh sửa tài nguyên của người khác.</response>
+            <response code="404">Không tìm thấy Đơn Đặt Hàng hoặc thẻ Tag trong đơn.</response>
+        </member>
+        <member name="T:Api.Controllers.User.RolesController">
+            <response code="401">Chưa xác thực hoặc xác thực thất bại</response>
+            <response code="409">Xung đột dữ liệu</response>
+            <response code="500">Lỗi bên thứ 3 hoặc ngoại lệ chưa xác định</response>
+        </member>
+        <member name="M:Api.Controllers.User.RolesController.Get">
+            <summary>
+            Trả về danh sách Quyền Hạn
+            </summary>
+            <response code="200">Danh sách Quyền Hạn</response>
+        </member>
+        <member name="T:Api.Controllers.User.SuppliersController">
+            <response code="401">Chưa xác thực hoặc xác thực thất bại</response>
+            <response code="409">Xung đột dữ liệu</response>
+            <response code="500">Lỗi bên thứ 3 hoặc ngoại lệ chưa xác định</response>
+        </member>
+        <member name="M:Api.Controllers.User.SuppliersController.Post(Api.Entities.Supplier)">
+            <summary>
+            Đăng ký trở thành Người Bán.
+            </summary>
+            <param name="supplier">Thông tin cần thiết để đăng ký. Không cần truyền SupplierId. FolderId truyền chuỗi bất kỳ để không lỗi. Mọi trường khác kiểu dữ liệu nguyên thủy và DateTime khi truyền vào đều không có giá trị (luôn bị bỏ qua).</param>
+            <response code="201">Thành công và trả về thông tin Người Bán. Cần làm mới Token để cập nhật Role - Quyền Truy Cập Api.</response>
+            <response code="412">Tài Khoản này đã đăng kí trở thành Người Bán trước đây rồi.</response>
+        </member>
+        <member name="P:Api.Models.Authenticator.Token">
+            <summary>
+            Mã xác thực danh tính để truy cập api
+            </summary>
+        </member>
+        <member name="P:Api.Models.Authenticator.RefreshToken">
+            <summary>
+            Mã xác thực dùng để xin cấp lại Token mà không cần đăng nhập
+            </summary>
+        </member>
+        <member name="T:Api.Models.HtmlReplacer">
+            <summary>
+            Lớp xử lý thay thế giá trị thích hợp vào mẫu Html sẵn có.
+            </summary>
+        </member>
+        <member name="M:Api.Models.IAccountAutoMail.SendPin(Api.Entities.Identification)">
+            <summary>
+            Gửi mã Pin dùng cho các thao tác yêu cầu xác thực.
+            </summary>
+        </member>
+        <member name="M:Api.Models.IAccountAutoMail.NotifyAccountGenerated(Api.Entities.Account)">
+            <summary>
+            Thông báo tạo Tài Khoản thành công.
+            </summary>
+        </member>
+        <member name="M:Api.Models.IDataIntegrity.IsIntegrity(System.String,System.String)">
+            <summary>
+            Kiểm tra tính toàn vẹn của dữ liệu.
+            </summary>
+            <param name="signature">Dữ liệu sau khi đã được xử lý băm với <seealso cref="!:Key"/>.</param>
+            <param name="data">Dữ liệu cần kiểm tra tính toàn vẹn.</param>
+            <returns>Đảm bảo toàn vẹn thì trả về <see langword="true"/>, ngược lại trả về <see langword="false"/>.</returns>
+        </member>
+        <member name="M:Api.Models.IDataIntegrity.GenerateSignature(System.String)">
+            <summary>
+            Tạo ra chữ ký bằng cách xử lý băm <seealso cref="!:Key"/> với <paramref name="data"/>
+            </summary>
+            <param name="data">Dữ liệu cần truyền đi.</param>
+        </member>
+        <member name="M:Api.Models.IOrderAutoMail.NotifyOrderReceived(Api.Entities.Order)">
+            <summary>
+            Thông báo Đơn Hàng đã có người nhận.
+            </summary>
+        </member>
+        <member name="M:Api.Models.IOrderAutoMail.NotifyOrderHasNewNegotiate(Api.Entities.Negotiation)">
+            <summary>
+            Thông báo Đơn Hàng có Thương Lượng mới.
+            </summary>
+        </member>
+        <member name="M:Api.Models.IOrderAutoMail.NotifyOrderDetailWasUpdated(Api.Entities.OrderDetail)">
+            <summary>
+            Thông báo Chi Tiết Đơn Hàng có sản phẩm mới tải lên, chờ duyệt.
+            </summary>
+        </member>
+        <member name="M:Api.Models.IOrderAutoMail.NotifySuccessOder(Api.Entities.Order)">
+            <summary>
+            Thông báo Đơn Hàng hoàn tất.
+            </summary>
+        </member>
+        <member name="M:Api.Models.LoginHandler.IsValid(System.String,System.String,Api.Entities.Account@)">
+            <summary>
+            Kiểm tra thông tin đăng nhập
+            </summary>
+            <param name="id">Tài khoản</param>
+            <param name="password">Mật khẩu</param>
+            <param name="account">Nếu hợp lệ sẽ trả về thông tin Tài Khoản</param>
+            <returns>true: hợp lệ<br/>false: sai <paramref name="password"/><br/>nul: <paramref name="id"/> không tồn tại</returns>
+        </member>
+        <member name="M:Api.Models.PINHandler.CheckPIN(System.String,System.String)">
+            <summary>
+            Kiểm tra trạng thái mã PIN
+            </summary>
+            <param name="id">id cần đối chiếu <paramref name="PIN"/></param>
+            <param name="PIN">Mã do người dùng truyền để xác thực danh tính của họ</param>
+            <returns>0: Mã chính xác<br/>1: Không tìm thấy id yêu cầu <paramref name="PIN"/><br/>2: Mã không chính xác<br/>3: Mã hết hạn hiệu lực<br/></returns>
+        </member>
+        <member name="T:Api.Models.RateStatistics">
+            <summary>
+            Thống kê đánh giá.
+            </summary>
+        </member>
+        <member name="P:Api.Models.RateStatistics.AverageRate">
+            <summary>
+            Tỉ lệ đánh giá trung bình.
+            </summary>
+        </member>
+        <member name="P:Api.Models.RateStatistics.Count">
+            <summary>
+            Tổng số đánh giá.
+            </summary>
+        </member>
+        <member name="T:Api.Models.StatusError">
+            <summary>
+            Thông báo lỗi HTTP khi thực hiện truy vấn API
+            </summary>
+        </member>
+        <member name="P:Api.Models.StatusError.StatusCode">
+            <summary>
+            Mã trạng thái HTTP lỗi
+            </summary>
+        </member>
+        <member name="P:Api.Models.StatusError.Message">
+            <summary>
+            Văn bản thông báo chi tiết về lỗi
+            </summary>
+        </member>
+        <member name="P:Api.Models.StatusError.SupportUrl">
+            <summary>
+            Đường dẫn có thể giúp giải quyết được vấn đề
+            </summary>
+        </member>
+        <member name="P:Api.Models.StatusError.RepairGuides">
+            <summary>
+            Những hướng dẫn giúp chuẩn đoán chính xác hơn sự cố hoặc có thể khắc phục lỗi
+            </summary>
+        </member>
+        <member name="T:Api.Models.Token">
+            <summary>
+            Mã xác thực danh tính
+            </summary>
+        </member>
+        <member name="P:Api.Models.Token.Value">
+            <summary>
+            Giá trị chuỗi của Token
+            </summary>
+        </member>
+        <member name="P:Api.Models.Token.Expired">
+            <summary>
+            Thời gian hết hạn của Token
+            </summary>
+        </member>
+    </members>
+</doc>
